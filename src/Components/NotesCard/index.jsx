@@ -1,91 +1,88 @@
 import { useNotes } from "../../notesContext";
 import { findNotesInArchieve } from "../../utils/findNotesInArchieve";
-export const NotesCard = ({ id, title, text, isPinned }) => {
-  const { notesDispatch, archieve } = useNotes();
-  const isNotesInArchieve = findNotesInArchieve(archieve, id);
-  const onPinCLick = (id) => {
-    !isPinned
-      ? notesDispatch({
-          type: "PIN",
-          payload: { id },
-        })
-      : notesDispatch({
-          type: "UNPIN",
-          payload: { id },
-        });
-  };
-  
-  const onArchieveClick = (id) => {
-    !isNotesInArchieve
-      ? notesDispatch({
-          type: "ARCHIEVE",
-          payload: { id },
-        })
-      : notesDispatch({
-          type: "UNARCHIEVE",
-          payload: { id },
-        });
-  };
-const onDeletebtnClick=()=>{
-  notesDispatch({
-    type:"BIN",
-    payload:{id}
-  })
+import { findNotesInImportant } from "../../utils/isNotesinImportant";
 
-}
-const onPermantClick=(id)=>{
-  notesDispatch({
-    type:"PERMANTDELETE",
-    payload:{id}
-  })
-}
+export const NotesCard = ({ id, title, text, isPinned }) => {
+  const { notesDispatch, archieve, important } = useNotes();
+  const isNotesInArchieve = findNotesInArchieve(archieve, id);
+  const isNotesinImportant = findNotesInImportant(important, id);
+
+  const onPinCLick = (id) => {
+    notesDispatch({
+      type: isPinned ? "UNPIN" : "PIN",
+      payload: { id },
+    });
+  };
+
+  const onArchieveClick = (id) => {
+    notesDispatch({
+      type: isNotesInArchieve ? "UNARCHIEVE" : "ARCHIEVE",
+      payload: { id },
+    });
+  };
+
+  const onDeletebtnClick = () => {
+    notesDispatch({
+      type: "BIN",
+      payload: { id },
+    });
+  };
+
+  const onImportantClick = (id) => {
+    notesDispatch({
+      type: isNotesinImportant ? "UNIMPORTANT" : "IMPORTANT",
+      payload: { id },
+    });
+  };
+
   return (
-    <div
-      key={id}
-      className="p-4 bg-white shadow-lg rounded-lg border border-gray-300"
-    >
+    <div className="p-5 bg-white shadow-md rounded-lg border border-gray-200 transition-transform duration-200 hover:shadow-lg hover:scale-105">
+      {/* Title & Pin */}
       <div className="flex justify-between items-center">
-        <h3 className="text-lg font-semibold">{title}</h3>
-        {!isNotesInArchieve ? (
-          <button onClick={() => onPinCLick(id)}>
-            <span
-              className={`material-symbols-outlined text-gray-600 hover:text-blue-500 ${
-                isPinned ? "bg-red-300" : ""
-              }`}
-            >
-              push_pin
-            </span>
+        <h3 className="text-lg font-semibold text-gray-800">{title}</h3>
+        {!isNotesInArchieve && (
+          <button
+            onClick={() => onPinCLick(id)}
+            className={`p-1 rounded-full transition ${
+              isPinned ? "bg-red-300 text-white" : "text-gray-600 hover:text-blue-500"
+            }`}
+          >
+            <span className="material-symbols-outlined">push_pin</span>
           </button>
-        ) : (
-          <></>
         )}
       </div>
-      <p className="text-gray-700 mt-2">{text}</p>
-      <div className="flex justify-end gap-2 mt-4">
+
+      {/* Note Content */}
+      <p className="text-gray-700 mt-2 text-sm">{text}</p>
+
+      {/* Action Buttons */}
+      <div className="flex justify-end gap-3 mt-4">
+        {/* Archive Button */}
         <button
-          className="text-gray-600 hover:text-blue-500"
           onClick={() => onArchieveClick(id)}
+          className={`p-2 rounded-full transition ${
+            isNotesInArchieve ? "bg-amber-400 text-white" : "text-gray-600 hover:text-blue-500"
+          }`}
         >
-          <span
-            className={
-              isNotesInArchieve ? "bg-amber-400" : "material-symbols-outlined"
-            }
-          >
-            archive
-          </span>
+          <span className="material-symbols-outlined">archive</span>
         </button>
 
+        {/* Important Button */}
         <button
-          className="text-red-600 hover:text-red-800"
-          onClick={() => onDeletebtnClick(id)}
+          onClick={() => onImportantClick(id)}
+          className={`p-2 rounded-full transition ${
+            isNotesinImportant ? "bg-yellow-500 text-white" : "text-gray-600 hover:text-yellow-500"
+          }`}
         >
-          
-          <span onClick={()=>onPermantClick(id)}
-            className="material-symbols-outlined"
-            
-          >
-            delete
-          </span>
+          <span className="material-symbols-outlined">label_important</span>
+        </button>
+
+        {/* Delete Button */}
+        <button
+          onClick={() => onDeletebtnClick(id)}
+          className="p-2 rounded-full text-red-600 hover:text-red-800 transition"
+        >
+          <span className="material-symbols-outlined">delete</span>
         </button>
       </div>
     </div>
