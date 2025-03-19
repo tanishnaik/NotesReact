@@ -85,17 +85,6 @@ export const notesReducer = (state, { type, payload }) => {
         ...state,
         bin: [...state.bin.filter(({ id }) => id !== payload.id)],
       };
-      case "RESTORE": {
-        //first add to note array then remove from archieve
-        return {
-          ...state,
-          notes: [
-            ...state.notes,
-            state.bin.find(({ id }) => id === payload.id),
-          ],
-          bin: state.bin.filter(({ id }) => id !== payload.id),
-        };
-      }
 
     default:
       return state;

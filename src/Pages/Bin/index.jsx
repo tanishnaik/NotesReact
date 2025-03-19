@@ -3,21 +3,12 @@ import { Navbar } from "../../Components/Navbar";
 import { SideBar } from "../../Components";
 import { useNotes } from "../../notesContext";
 import { NotesCard } from "../../Components/NotesCard";
-import {Restore} from "../../utils/isINTrash";
 
 export const Bin = () => {
-
   const { bin,notesDispatch} = useNotes();
-  const isInTrash=Restore();
   const onDeletePermanentlyClick=(id)=>{
     notesDispatch({
         type:"PERMANANT_DELETE",
-        payload:{id}
-    })
-  }
-  const restoreFromTrash=(id)=>{
-    notesDispatch({
-        type:"RESTORE",
         payload:{id}
     })
   }
@@ -51,11 +42,7 @@ export const Bin = () => {
                         delete_forever
                       </span>
                     </button>
-                    <button onClick={()=>restoreFromTrash(note.id)}>
-                    <span class="material-symbols-outlined">
-restore_from_trash
-</span>
-                    </button>
+                    
                   </div>
                 </div>
               ))
